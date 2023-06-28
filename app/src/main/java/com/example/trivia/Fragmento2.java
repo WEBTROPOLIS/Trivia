@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,7 +24,7 @@ import android.widget.TextView;
  */
 public class Fragmento2 extends Fragment {
 private TextView txtSaludo;
-private RadioButton rbFacebbok, rbTwitter,rbWahtsapp,rbInstagram;
+private RadioButton rbFacebook, rbTwitter,rbWhatsapp,rbInstagram;
 private String nombre;
 private Button btnEnviar;
     // TODO: Rename parameter arguments, choose names that match
@@ -73,29 +74,50 @@ private Button btnEnviar;
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         txtSaludo = view.findViewById(R.id.txtSaludo);
-        rbWahtsapp= view.findViewById(R.id.rbWhatsapp);
+        rbWhatsapp= view.findViewById(R.id.rbWhatsapp);
         btnEnviar = view.findViewById(R.id.btnEnviar);
-
+        rbFacebook=view.findViewById(R.id.rbFacebook);
+        rbTwitter = view.findViewById(R.id.rbTwitter);
+        rbInstagram= view.findViewById(R.id.rbInstagram);
         btnEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-
+               Boolean isCheck=false;
                 Bundle bundle1 = new Bundle();
                 bundle1.putString("nombre",nombre);
-                if (!rbWahtsapp.isChecked()){
-                   bundle1.putString("msj"," lo sentimos es incorrecto");
+                if (!rbWhatsapp.isChecked()){
+                    if(rbFacebook.isChecked()){
+                        bundle1.putString("msj"," lo sentimos Facebook no es incorrecto");
+                        isCheck=true;
+                    }
+
+                    if(rbInstagram.isChecked()){
+                        bundle1.putString("msj"," lo sentimos Instagram no es incorrecto");
+                        isCheck=true;
+                    }
+
+                    if(rbTwitter.isChecked()){
+                        bundle1.putString("msj"," lo sentimos Twitter no es incorrecto");
+                        isCheck=true;
+                    }
+
                 }else{
-                    bundle1.putString("msj"," felicidades, acertaste!");
+                    bundle1.putString("msj"," felicidades WhatsApp es correcto!");
+                    isCheck=true;
                 }
-                getParentFragmentManager().setFragmentResult("datos1",bundle1);
-                Fragmento3 fragmento3 = new Fragmento3();
-                fragmento3.setArguments(bundle1);
-                FragmentManager fragmentManager=requireActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.frame1,fragmento3);
-                fragmentTransaction.addToBackStack("Frag2");
-                fragmentTransaction.commit();
+                if (isCheck) {
+                    getParentFragmentManager().setFragmentResult("datos1", bundle1);
+                    Fragmento3 fragmento3 = new Fragmento3();
+                    fragmento3.setArguments(bundle1);
+                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.frame1, fragmento3);
+                    fragmentTransaction.addToBackStack("Frag2");
+                    fragmentTransaction.commit();
+                }else{
+                    Toast.makeText(getContext(),"Debes seleccionar una opcion",Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
